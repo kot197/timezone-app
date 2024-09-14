@@ -1,15 +1,21 @@
 "use server";
 
-import { signIn, signOut } from "../../../../auth";
+import { redirect } from "next/dist/server/api-utils";
+import { auth, signIn, signOut } from "../../../../auth";
 
 export async function handleSignIn() {
   "use server"
   
-  await signIn("discord", { redirectTo: "/home" })
+  await signIn("discord", { redirectTo: "/web-app/home" })
 }
 
 export async function handleSignOut() {
     "use server"
+    
+    const session = await auth()
 
-    await signOut({ redirectTo: "/" })
+    console.log("handleSignOut " + session?.user)
+    await signOut({ redirect: false })
+
+    return { redirectTo: "/" }
 }
