@@ -18,9 +18,9 @@ export const authConfig = {
     },
   },
   providers: [
-        Discord({
-            clientId: process.env.AUTH_DISCORD_ID,
-            clientSecret: process.env.AUTH_DISCORD_SECRET,
-        })
-    ],
+    Discord({
+        clientId: process.env.AUTH_DISCORD_ID,
+        clientSecret: process.env.AUTH_DISCORD_SECRET,
+    })
+  ],
 } satisfies NextAuthConfig;
