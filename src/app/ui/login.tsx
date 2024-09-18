@@ -23,9 +23,9 @@ export default function Login() {
                     <label htmlFor="password" className="absolute top-0 left-1.5">Password</label>
                 </div>
                 <button className="py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition-all">Login</button>
-                <button className="py-2 px-4 rounded-3xl bg-white hover:bg-gray-600 transition-all mt-4 text-black hover:text-white">
-                    <a href="/login/discord">Login with Discord<Image className="inline ml-3" src="/discord.png" alt="" width="24" height="24"/></a>
-                </button>
+                <a className="py-2 px-4 rounded-3xl bg-white hover:bg-gray-600 transition-all mt-4 text-black hover:text-white text-center" href="/login/discord">
+                    Login with Discord<Image className="inline ml-3" src="/discord.png" alt="" width="24" height="24"/>
+                </a>
                 <div className='py-4 flex justify-center'>
                     <p className="text-center">Don't have an account? <a href="#" className='hover:text-primary-500 transition-all'>Register</a>
                     <br/>or<br/>

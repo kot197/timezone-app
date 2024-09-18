@@ -3,7 +3,6 @@
 import { ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid'
 import Image from "next/image";
 import { createContext, useContext, useState } from 'react';
-import { handleSignOut } from '../api/auth/actions';
 
 const SideBarContext = createContext(true);
 export default function SideBar({ children, profileMenu }: { children: React.ReactNode, profileMenu: React.ReactNode }) {
@@ -98,16 +97,11 @@ export function SideBarItem({ icon, text, active, alert }: { icon: React.ReactNo
 // TODO: Make this for any menu item, not exclusive for sign out
 export function EllipsisMenuItem({icon}: {icon: React.ReactNode}) {
     return (
-        <form action={async () => { 
-            const result = await handleSignOut();
-            if (result.redirectTo) {
-                window.location.href = result.redirectTo; // Manually redirect client-side
-              }
-            }}>
-            <button className="flex items-center" type="submit">
+        <form>
+            <a href="/sign-out" className="flex items-center" type="submit">
                 {icon}
                 Sign Out
-            </button>
+            </a>
         </form>
     );
 }
