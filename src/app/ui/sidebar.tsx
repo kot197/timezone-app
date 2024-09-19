@@ -2,7 +2,8 @@
 
 import { ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid'
 import Image from "next/image";
-import { createContext, useContext, useState } from 'react';
+import Link from 'next/link';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const SideBarContext = createContext(true);
 export default function SideBar({ children, profileMenu }: { children: React.ReactNode, profileMenu: React.ReactNode }) {
@@ -58,39 +59,45 @@ export default function SideBar({ children, profileMenu }: { children: React.Rea
     );
 }
 
-export function SideBarItem({ icon, text, active, alert }: { icon: React.ReactNode, text: string, active?: boolean, alert?: boolean }) {
+export function SideBarItem({ href, icon, text, active, alert, path }: { href: string, icon: React.ReactNode, text: string, active?: boolean, alert?: boolean, path: string }) {
     const expanded = useContext(SideBarContext);
 
-    return (
-        <li className={`
-            relative flex items-center py-2 px-3 font-medium rounded-md cursor-pointer
-            transition-colors group
-            ${
-                active
-                    ? "bg-gradient-to-tr from-indigo-20 to-indigo-100 text-indigo-800"
-                    : "hover:bg-indigo-50 text-white hover:text-gray-600"
-            }
-        `}>
-            { icon }
-            <span className={`overflow-hidden transition-all whitespace-nowrap ${
-                expanded ? "w-52 ml-3" : "w-0 p-0 h-0 overflow-hidden"
-            }`}>{ text }</span>
-            {alert && (
-                <div 
-                    className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-                        expanded ? "":"top-2"
-                    }`}
-                />
-            )}
+    if(("/web-app/" +  href) === path) {
+        active = true;
+    }
 
-            {!expanded && <div className={`
-                absolute left-full rounded-md px-2 py-1 ml-6
-                bg-indigo-100 text-indigo-800 text-sm
-                invisible opacity-20 -translate-x-3 trasition-all
-                whitespace-nowrap
-                group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
-            `}>{text}</div>}
-        </li>
+    return (
+        <Link href={href}>
+            <li className={`
+                relative flex items-center py-2 px-3 font-medium rounded-md cursor-pointer
+                transition-colors group
+                ${
+                    active
+                        ? "bg-gradient-to-tr from-indigo-20 to-indigo-100 text-indigo-800"
+                        : "hover:bg-indigo-50 text-white hover:text-gray-600"
+                }
+            `}>
+                { icon }
+                <span className={`overflow-hidden transition-all whitespace-nowrap ${
+                    expanded ? "w-52 ml-3" : "w-0 p-0 h-0 overflow-hidden"
+                }`}>{ text }</span>
+                {alert && (
+                    <div 
+                        className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
+                            expanded ? "":"top-2"
+                        }`}
+                    />
+                )}
+
+                {!expanded && <div className={`
+                    absolute left-full rounded-md px-2 py-1 ml-6
+                    bg-indigo-100 text-indigo-800 text-sm
+                    invisible opacity-20 -translate-x-3 trasition-all
+                    whitespace-nowrap
+                    group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
+                `}>{text}</div>}
+            </li>
+        </Link>
     );
 }
 
