@@ -15,12 +15,14 @@ generator client {
 }
  
 model User {
-  discord_id String @id
-  discord_username String
-  discriminator String
-  discord_avatar String
-  discord_verified Boolean
-  discord_email String
+  id String @id
+  email String @unique
+  discordId String? @unique
+  discordUsername String?
+  discriminator String?
+  discordAvatar String?
+  discordVerified Boolean?
+  discordEmail String?
   sessions Session[]
   friends Friend[]
 }
@@ -30,7 +32,7 @@ model Session {
   userId    String
   expiresAt DateTime
 
-  user      User     @relation(references: [discord_id], fields: [userId], onDelete: Cascade)
+  user      User     @relation(references: [discordId], fields: [userId], onDelete: Cascade)
 }
 
 model Friend {
@@ -46,7 +48,7 @@ model Friend {
 
   // Relations
   userId String
-  user User @relation(references: [discord_id], fields: [userId], onDelete: Cascade)
+  user User @relation(references: [discordId], fields: [userId], onDelete: Cascade)
   notifications Notification[]
   tags FriendTag[]
 }
