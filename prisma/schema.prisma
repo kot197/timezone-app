@@ -22,6 +22,7 @@ model User {
   discord_verified Boolean
   discord_email String
   sessions Session[]
+  friends Friend[]
 }
 
 model Session {
@@ -35,5 +36,44 @@ model Session {
 model Friend {
   id Int @id @default(autoincrement())
   country String
-  location String
+  country_code String
+  timezone String
+  location String?
+  notes String?
+  profilePic String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId String
+  user User @relation(references: [discord_id], fields: [userId], onDelete: Cascade)
+  notifications Notification[]
+  tags FriendTag[]
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  message String
+  createdAt DateTime @default(now())
+
+  friendId Int
+  friend Friend @relation(references: [id], fields: [friendId])
+}
+
+model Tag {
+  id Int @id @default(autoincrement())
+  name String @unique
+  friends FriendTag[]
+}
+
+model FriendTag {
+  friendId Int
+  tagId Int
+
+  // Relations
+  friend Friend @relation(references: [id], fields: [friendId])
+  tag Tag @relation(references: [id], fields: [tagId])
+
+  // Composite Primary Key
+  @@id([friendId, tagId])
 }
