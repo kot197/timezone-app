@@ -37,7 +37,7 @@ export async function GET(request: Request): Promise<Response> {
 
 		// If user exists, create session with its id along with the cookie
 		if (existingUser) {
-			const session = await lucia.createSession(existingUser.discord_id, {});
+			const session = await lucia.createSession(existingUser.discordId as string, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			console.log("existingUser true \n" + "session: " + JSON.stringify(session, null, 2) + "\nsessionCookie: " + JSON.stringify(sessionCookie, null, 2));
 			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
@@ -53,7 +53,7 @@ export async function GET(request: Request): Promise<Response> {
 		const userId = await createDiscordUser(discordUser);
 
 		// Create session with id along with the cookie
-		const session = await lucia.createSession(userId, {});
+		const session = await lucia.createSession(userId as string, {});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return new Response(null, {
@@ -80,7 +80,7 @@ export interface DiscordUser {
 	id: string;
 	username: string;
     discriminator: string;
-    avatar: string | null;
+    avatar: string;
     verified: boolean;
-    email: string | null;
+    email: string;
 }

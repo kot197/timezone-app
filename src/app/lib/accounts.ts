@@ -4,7 +4,7 @@ import { DiscordUser } from "../(general)/login/discord/callback/route";
 export async function getAccountByDiscordId(discordId: string) {
     return await prisma.user.findFirst({
         where: {
-            discord_id: discordId
+            discordId: discordId
         }
     })
 }
@@ -12,14 +12,43 @@ export async function getAccountByDiscordId(discordId: string) {
 export async function createDiscordUser(discordUser: DiscordUser) {
     const user = await prisma.user.create({
         data: {
-            discord_id: discordUser.id,
-            discord_username: discordUser.username,
-            discord_avatar: discordUser.avatar ?? "",
-            discord_email: discordUser.email ?? "",
+            id: "123", // TODO
+            discordId: discordUser.id,
+            discordUsername: discordUser.username,
+            discordAvatar: discordUser.avatar ?? "",
+            discordEmail: discordUser.email ?? "",
             discriminator: discordUser.discriminator,
-            discord_verified: discordUser.verified,
+            discordVerified: discordUser.verified,
         }
     });
 
-    return user.discord_id;
+    return user.discordId;
 }
+
+export async function getUserByUserId(userId: string) {
+    return await prisma.user.findFirst({
+        where: {
+            id: userId
+        }
+    })
+}
+
+export async function getUserByUsername(username: string) {
+    return await prisma.user.findFirst({
+        where: {
+            email: username
+        }
+    })
+}
+
+export async function createUser(userId: string, username: string, passwordHash: string) {
+    await prisma.user.create({
+        data: {
+            id: userId,
+            email: username,
+            passwordHash: passwordHash,
+        }
+    });
+}
+
+

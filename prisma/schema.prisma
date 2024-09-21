@@ -16,7 +16,8 @@ generator client {
  
 model User {
   id String @id
-  email String @unique
+  email String? @unique
+  passwordHash String?
   discordId String? @unique
   discordUsername String?
   discriminator String?
@@ -32,7 +33,7 @@ model Session {
   userId    String
   expiresAt DateTime
 
-  user      User     @relation(references: [discordId], fields: [userId], onDelete: Cascade)
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Friend {

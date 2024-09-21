@@ -5,7 +5,8 @@ import Login from './login';
 import { useState } from 'react';
 
 export default function NavBar() {
-    const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
     return (
         <nav className="flex justify-around items-center">
@@ -16,9 +17,9 @@ export default function NavBar() {
                 <li className="inline p-5 hover:text-primary-500 transition-all"><a href="#">Pricing</a></li>
                 <li className="inline p-5 hover:text-primary-500 transition-all"><a href="#">Contact</a></li>
             </ul>
-            <button onClick={() => setIsLoginOpen(true)} className="py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition-all"><a href="#">Launch App</a></button>
-            <Modal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)}>
-                <Login/>
+            <button onClick={() => setIsModalOpen(true)} className="py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition-all"><a href="#">Launch App</a></button>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <Login isRegistering={isRegistering} openRegister={() => setIsRegistering(true)} closeRegister={() => setIsRegistering(false)}/>
             </Modal>
         </nav>
     );
