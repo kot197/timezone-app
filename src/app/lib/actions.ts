@@ -2,29 +2,26 @@
 
 import { hash, verify } from "@node-rs/argon2";
 import { generateIdFromEntropySize } from "lucia";
-import { createUser, getUserByUserId, getUserByUsername } from "./accounts";
+import { createUser, getUserByUserId, getUserByEmail } from "./accounts";
 import { lucia } from "./auth";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { isValidEmail } from "./utils";
 
-export async function signup(formData: FormData): Promise<ActionResult> {
-    const username = formData.get("username");
+export async function signup(formData: FormData): Promise<Response> {
+    const email = formData.get("email");
     if (
-        typeof username !== "string" ||
-        username.length < 3 ||
-        username.length > 31 ||
-        !/^[a-z0-9_-]+$/.test(username)
+        !email || typeof email !== "string" || isValidEmail(email)
     ) {
-        return {
-            error: "Invalid username"
-        };
+        return new Response("Invalid email", {
+			status: 400
+		});
     }
 
     const password = formData.get("password");
-    if(typeof password !== "string" || password.length < 6 || password.length > 255) {
-        return {
-            error: "Invalid password"
-        };
+    if(!password || typeof password !== "string" || password.length < 6 || password.length > 255) {
+        return new Response("Invalid password", {
+			status: 400
+		});
     }
 
     const passwordHash = await hash(password, {
@@ -37,46 +34,55 @@ export async function signup(formData: FormData): Promise<ActionResult> {
 
     const user = await getUserByUserId(userId);
 
-    if(!user) {
-        await createUser(userId, username, passwordHash)
+    try {
+        if(!user) {
+            await createUser(userId, email, passwordHash)
+        }
+    
+        const session = await lucia.createSession(userId, {});
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        return new Response(null, {
+			status: 302,
+			headers: {
+				Location: "/",
+				"Set-Cookie": sessionCookie.serialize()
+			}
+		});
+    } catch {
+        return new Response("Email already used", {
+			status: 400
+		});
     }
-
-    const session = await lucia.createSession(userId, {});
-    const sessionCookie = lucia.createSessionCookie(session.id);
-    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-    redirect("/web-app/home");
 }
 
-export async function login(formData: FormData): Promise<ActionResult> {
+export async function login(formData: FormData): Promise<Response> {
     console.log("in login actions.ts")
-    const username = formData.get("username");
-    console.log(typeof username);
+    const email = formData.get("email");
     if(
-        typeof username !== "string" ||
-		username.length < 3 ||
-		username.length > 31 ||
-		!/^[a-z0-9_-]+$/.test(username)
+        !email ||
+        typeof email !== "string" ||
+        isValidEmail(email)
     ) {
-        console.log("Invalid username");
-		return {
-			error: "Invalid username"
-		};
+        console.log("Invalid email");
+		return new Response("Invalid email", {
+			status: 400
+		});
 	}
 
     const password = formData.get("password");
-	if (typeof password !== "string" || password.length < 6 || password.length > 255) {
+	if (!password || typeof password !== "string" || password.length < 6 || password.length > 255) {
         console.log("Invalid password");
-		return {
-			error: "Invalid password"
-		};
+		return new Response(null, {
+			status: 400
+		});
 	}
 
-    const existingUser = await getUserByUsername(username);
+    const existingUser = await getUserByEmail(email);
     if(!existingUser) {
-        console.log("Incorrect username or password");
-        return {
-			error: "Incorrect username or password"
-		};
+        console.log("Incorrect email or password");
+        return new Response("Invalid email or password", {
+			status: 400
+		});
     }
 
     const validPassword = await verify(existingUser.passwordHash as string, password, {
@@ -86,16 +92,28 @@ export async function login(formData: FormData): Promise<ActionResult> {
 		parallelism: 1
     });
     if(!validPassword) {
-        console.log("Incorrect username or password");
-        return {
-			error: "Incorrect username or password"
-		};
+        console.log("Incorrect email or password");
+        return new Response("Invalid email or password", {
+			status: 400
+		});
     }
 
     const session = await lucia.createSession(existingUser.id, {});
 	const sessionCookie = lucia.createSessionCookie(session.id);
-	cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+
     console.log("login: no error");
+
+    const serializedCookie = sessionCookie.serialize();
+
+    console.log(serializedCookie);
+
+    return new Response(null, {
+		status: 302,
+		headers: {
+			Location: "/web-app/home",
+			"Set-Cookie": sessionCookie.serialize()
+		}
+	});
 }
 
 interface ActionResult {

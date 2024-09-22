@@ -23,8 +23,8 @@ export const lucia = new Lucia(adapter, {
 	},
 	getUserAttributes: (attributes) => {
 		return {
-			discordId: attributes.discord_id,
-			username: attributes.username
+			discordId: attributes.discordId,
+			email: attributes.email
 		}
 	}
 });
@@ -67,6 +67,6 @@ declare module "lucia" {
 }
 
 interface DatabaseUserAttributes {
-	discord_id: string;
-	username: string;
+	discordId: string;
+	email: string;
 }

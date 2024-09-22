@@ -1,22 +1,22 @@
 import { lucia, validateRequest } from "@/app/lib/auth";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
-export async function GET(): Promise<ActionResult> {
+export async function GET(): Promise<Response> {
 	const { session } = await validateRequest();
 	if(!session) {
-		return {
-			error: "Unauthorized"
-		};
+		return new Response(null, {
+			status: 400
+		});
 	}
 
 	await lucia.invalidateSession(session.id);
 
 	const sessionCookie = lucia.createBlankSessionCookie();
 	cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-	return redirect("/");
-}
-
-interface ActionResult {
-	error: string | null;
+	return new Response(null, {
+        status: 302,
+        headers: {
+            Location: "/"
+        }
+    });
 }

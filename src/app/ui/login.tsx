@@ -9,12 +9,12 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
             <span className="text-white text-4xl">{isRegistering? "Register" : "Login" }</span>
             {
                 !isRegistering ? (
-                    <form className="w-full h-full flex flex-col" action="/login/username" method='post'>
+                    <form className="w-full h-full flex flex-col" action="/login/email" method='post'>
                         <div className='border-b-4 relative my-7'>
                             <span>
                                 <EnvelopeIcon className='absolute right-1.5 size-6'/>
                             </span>
-                            <input name="username" id="email" type="text" className='bg-transparent border-none outline-none w-full h-full p-2'></input>
+                            <input name="email" id="email" type="text" className='bg-transparent border-none outline-none w-full h-full p-2'></input>
                             <label htmlFor="email" className="absolute top-0 left-1.5">Email</label>
                         </div>
                         <div className='border-b-4 relative my-7'>
@@ -40,7 +40,7 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
                             <span>
                                 <EnvelopeIcon className='absolute right-1.5 size-6'/>
                             </span>
-                            <input name="username" id="email" type="text" className='bg-transparent border-none outline-none w-full h-full p-2'></input>
+                            <input name="email" id="email" type="text" className='bg-transparent border-none outline-none w-full h-full p-2'></input>
                             <label htmlFor="email" className="absolute top-0 left-1.5">Email</label>
                         </div>
                         <div className='border-b-4 relative my-7'>

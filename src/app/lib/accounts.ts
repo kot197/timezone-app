@@ -33,19 +33,19 @@ export async function getUserByUserId(userId: string) {
     })
 }
 
-export async function getUserByUsername(username: string) {
+export async function getUserByEmail(email: string) {
     return await prisma.user.findFirst({
         where: {
-            email: username
+            email: email
         }
     })
 }
 
-export async function createUser(userId: string, username: string, passwordHash: string) {
+export async function createUser(userId: string, email: string, passwordHash: string) {
     await prisma.user.create({
         data: {
             id: userId,
-            email: username,
+            email: email,
             passwordHash: passwordHash,
         }
     });
