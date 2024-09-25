@@ -3,7 +3,6 @@ import { Discord } from "arctic";
 import { adapter } from "../../db/prisma";
 import { cookies } from "next/headers";
 import { cache } from "react";
-import { redirect } from "next/navigation";
 
 console.log('AUTH_DISCORD_ID: ' + process.env.AUTH_DISCORD_ID);
 console.log('AUTH_DISCORD_SECRET: ' + process.env.AUTH_DISCORD_SECRET);
@@ -24,7 +23,8 @@ export const lucia = new Lucia(adapter, {
 	getUserAttributes: (attributes) => {
 		return {
 			discordId: attributes.discordId,
-			email: attributes.email
+			email: attributes.email,
+			emailVerified: attributes.emailVerified,
 		}
 	}
 });
@@ -69,4 +69,5 @@ declare module "lucia" {
 interface DatabaseUserAttributes {
 	discordId: string;
 	email: string;
+	emailVerified: boolean;
 }

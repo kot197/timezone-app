@@ -18,9 +18,12 @@
     "@prisma/client": "5.19.1",
     "arctic": "^1.9.2",
     "countries-and-timezones": "^3.6.0",
+    "googleapis": "^144.0.0",
     "lucia": "^3.2.0",
     "next": "14.2.7",
     "next-auth": "5.0.0-beta.20",
+    "nodemailer": "^6.9.15",
+    "oslo": "^1.2.1",
     "pg": "^8.12.0",
     "react": "^18",
     "react-dom": "^18"
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.16",
     "@types/pg": "^8.11.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",

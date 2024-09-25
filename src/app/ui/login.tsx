@@ -1,7 +1,6 @@
 import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import { login, signup } from '../lib/actions';
-import { useEffect } from 'react';
 
 export default function Login({isRegistering, openRegister, closeRegister}: {isRegistering: boolean, openRegister: () => void, closeRegister: () => void}) {
     return (
@@ -35,7 +34,7 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
                         </div>
                     </form>
                 ) : (
-                    <form className="w-full h-full flex flex-col" action={signup}>
+                    <form className="w-full h-full flex flex-col" action="/sign-up" method='post'>
                         <div className='border-b-4 relative my-7'>
                             <span>
                                 <EnvelopeIcon className='absolute right-1.5 size-6'/>
