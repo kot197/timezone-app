@@ -13,5 +13,5 @@
 ### This is where you can see your friends' in a list and decide what action to do for each entry
 ![image](https://github.com/user-attachments/assets/bae076c7-fed7-4f58-b559-6dea20c6b3d0)
 ## Add Friend
-### This is where you can add a new friend, integration with discord might be added in the future 
+### This is where you can add a new friend, integration with discord will be added in the future 
 ![image](https://github.com/user-attachments/assets/1e93cbfe-0582-497c-8397-a8aa80fa5277)
