@@ -11,7 +11,7 @@ export default function CardGrid({ children }: { children: React.ReactNode }) {
 export function Card() {
     return (
         <div className="border-2 rounded-3xl p-6 overflow-hidden">
-            <h1 className='w-full text-center'>Kot</h1>
+            <h1 className='w-full text-center'>James</h1>
             <hr className="my-3"/>
             <div className='flex flex-col items-center justify-around mb-4'>
                 <span className='text-4xl'>3:15 PM</span>

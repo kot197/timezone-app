@@ -38,7 +38,7 @@ export function FriendsTableRow() {
     
     return (
         <tr className="h-12 border-b">
-            <td>Kot</td>
+            <td>James</td>
             <td>Asia/Jakarta</td>
             <td>Active</td>
             <td>
