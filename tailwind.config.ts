@@ -20,6 +20,9 @@ const config: Config = {
           600: "rgb(2 132 199)",
         },  
       },
+      transitionProperty: {
+        'height': 'height'
+      },
     },
   },
   plugins: [
