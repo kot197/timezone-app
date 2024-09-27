@@ -1,8 +1,12 @@
 # Timezone App
 ## A project made with NextJS framework and Tailwind CSS
 ### An app to track your foreign friends timezone, perhaps even your clients.
-### Libraries used: Lucia Auth (authentication), Nodemailer (sending verification emails), Prisma (ORM), PostgreSQL (Database)
-
+### Libraries used:
+* Lucia Auth (authentication)
+* Nodemailer (sending verification emails)
+* Prisma (ORM)
+* PostgreSQL (Database)
+---
 ## Landing Page and Login/Register Page
 ### User will be able to login via email or with social (discord)
 ![image](https://github.com/user-attachments/assets/dc3d458d-da53-453a-8fb5-200202636bff)
