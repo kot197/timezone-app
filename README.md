@@ -1,4 +1,4 @@
-# Timezone App
+# Timezone App (Ongoing)
 ## A project made with NextJS framework and Tailwind CSS
 ### An app to track your foreign friends or acquaintances timezone
 ### Libraries used:
