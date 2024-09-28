@@ -47,10 +47,19 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
                 console.log("No validation error: ", formObject);
                 setErrors({});
 
-                const response = await fetch('/login/email', {
-                    method: 'POST',
-                    body: formData,
-                });
+                let response;
+
+                if(!isRegistering) {
+                    response = await fetch('/login/email', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                } else {
+                    response = await fetch('/sign-up', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                }
     
                 if(!response.ok) {
                     throw new Error('Failed to submit the data. Please try again.');
