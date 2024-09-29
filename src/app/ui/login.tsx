@@ -4,8 +4,10 @@ import { login, signup } from '../lib/actions';
 import { FormEvent, useState } from 'react';
 import { loginSchema } from '../lib/validationSchema';
 
-export default function Login({isRegistering, openRegister, closeRegister}: {isRegistering: boolean, openRegister: () => void, closeRegister: () => void}) {
+export default function Login() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [isRegistering, setIsRegistering] = useState<boolean>(false);
+    const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
     async function onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -63,6 +65,8 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
     
                 if(!response.ok) {
                     throw new Error('Failed to submit the data. Please try again.');
+                } else if (isRegistering) {
+                    setIsVerifying(true);
                 }
             
                 // Handle response if necessary
@@ -76,9 +80,24 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
 
     return (
         <div className="w-full flex flex-col items-center">
-            <span className="text-white text-4xl">{isRegistering? "Register" : "Login" }</span>
+            <span className="text-white text-4xl">{isVerifying ? "Verify Your Email Address" : (isRegistering ? "Register" : "Login")}</span>
             {
-                !isRegistering ? (
+                isVerifying ? (
+                    <form className="w-full h-full flex flex-col" onSubmit={onSubmit}>
+                        <p className='text-center mt-7 mb-4'>A six alphanumeric code has been sent to your email.<br/>
+                        Enter the code below to verify your email address.</p>
+                        <div className='flex justify-center space-x-4 text-black *:text-center *:text-2xl *:w-11 *:h-14 *:rounded-xl'>
+                            <input type='text' maxLength={1} autoFocus></input>
+                            <input type='text' maxLength={1}></input>
+                            <input type='text' maxLength={1}></input>
+                            <input type='text' maxLength={1}></input>
+                            <input type='text' maxLength={1}></input>
+                            <input type='text' maxLength={1}></input>
+                        </div>
+                        <p className='text-center mt-4'>Didn't get the code? Click <button className='text-primary-500 hover:text-primary-600 transition-all'>here</button> to resend the code</p>
+                        <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Verify</button>
+                    </form>
+                ) : !isRegistering ? (
                     <form className="w-full h-full flex flex-col" onSubmit={onSubmit}>
                         <div className='border-b-4 relative mt-9 mb-2'>
                             <span>
@@ -101,9 +120,9 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
                             Login with Discord<Image className="inline ml-3" src="/discord.png" alt="" width="24" height="24"/>
                         </a>
                         <div className='py-4 flex justify-center'>
-                            <p className="text-center">Don't have an account? <button onClick={openRegister} className='hover:text-primary-500 transition-all'>Register</button>
+                            <p className="text-center">Don't have an account? <button onClick={() => setIsRegistering(true)} className='text-primary-500 hover:text-primary-600 transition-all'>Register</button>
                             <br/>or<br/>
-                            <a href="#" className='hover:text-primary-500 transition-all'>Enter as guest</a></p>
+                            <a href="#" className='text-primary-500 hover:text-primary-600 transition-all'>Enter as guest</a></p>
                         </div>
                     </form>
                 ) : (
@@ -126,7 +145,7 @@ export default function Login({isRegistering, openRegister, closeRegister}: {isR
                         {errors.password && <p className='text-red-400'>{errors.password}</p>}
                         <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Register</button>
                         <div className='py-4 flex justify-center'>
-                            <p className="text-center">Already have an account? <button onClick={closeRegister} className='hover:text-primary-500 transition-all'>Login</button></p>
+                            <p className="text-center">Already have an account? <button onClick={() => setIsRegistering(false)} className='text-primary-500 hover:text-primary-600 transition-all'>Login</button></p>
                         </div>
                     </form>
                 )

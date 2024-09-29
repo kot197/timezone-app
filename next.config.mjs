@@ -12,7 +12,18 @@ const nextConfig = {
     },
     experimental: {
 		serverComponentsExternalPackages: ["@node-rs/argon2"]
-	}
+	},
+    webpack: (config, { isServer }) => {
+        // Only apply the loader in server-side environment
+        if (isServer) {
+          config.module.rules.push({
+            test: /\.html$/i,
+            use: 'raw-loader',
+          });
+        }
+    
+        return config;
+    },
 };
 
 export default nextConfig;

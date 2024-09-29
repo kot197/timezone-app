@@ -6,7 +6,6 @@ import { useState } from 'react';
 
 export default function NavBar() {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
     return (
         <nav className="flex justify-around items-center">
@@ -19,7 +18,7 @@ export default function NavBar() {
             </ul>
             <button onClick={() => setIsModalOpen(true)} className="py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition-all">Launch App</button>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <Login isRegistering={isRegistering} openRegister={() => setIsRegistering(true)} closeRegister={() => setIsRegistering(false)}/>
+                <Login/>
             </Modal>
         </nav>
     );

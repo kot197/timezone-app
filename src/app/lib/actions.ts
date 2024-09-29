@@ -6,7 +6,7 @@ import { createUser, getUserByUserId, getUserByEmail, generateEmailVerificationC
 import { lucia } from "./auth";
 import { cookies } from "next/headers";
 import { isValidEmail } from "./utils";
-import { sendVerificationCode } from "./email";
+import { sendVerificationCode, testVerificationCode } from "./email";
 
 export async function signup(formData: FormData): Promise<Response> {
     const email = formData.get("email");
@@ -44,12 +44,15 @@ export async function signup(formData: FormData): Promise<Response> {
         console.log("before generate verification code");
         const verificationCode = await generateEmailVerificationCode(userId, email);
         console.log(verificationCode);
-        await sendVerificationCode(email, verificationCode);
+        await testVerificationCode(verificationCode);
         
         const session = await lucia.createSession(userId, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
-        return new Response(null, {
-			status: 302,
+        return new Response(
+            JSON.stringify({
+                message: 'Success'
+            }), {
+			status: 200,
 			headers: {
 				Location: "/",
 				"Set-Cookie": sessionCookie.serialize()
