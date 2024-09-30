@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
   content: [
@@ -27,6 +28,10 @@ const config: Config = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    plugin(function ({ addVariant }) {
+      // Add a `third` variant, ie. `third:pb-0`
+      addVariant('not-placeholder-shown', '&:not(:placeholder-shown)');
+    })
   ],
 };
 export default config;

@@ -31,36 +31,41 @@ export async function signup(formData: FormData): Promise<Response> {
         outputLen: 32,
         parallelism: 1
     });
-    const userId = generateIdFromEntropySize(10);
-
-    const user = await getUserByUserId(userId);
 
     ("before generate verification code");
     try {
-        if(!user) {
-            await createUser(userId, email, passwordHash)
-        }
+        const userId = generateIdFromEntropySize(10);
+        const response = await createUser(userId, email, passwordHash)
 
-        console.log("before generate verification code");
-        const verificationCode = await generateEmailVerificationCode(userId, email);
-        console.log(verificationCode);
-        await testVerificationCode(verificationCode);
-        
-        const session = await lucia.createSession(userId, {});
-        const sessionCookie = lucia.createSessionCookie(session.id);
-        return new Response(
-            JSON.stringify({
-                message: 'Success'
-            }), {
-			status: 200,
-			headers: {
-				Location: "/",
-				"Set-Cookie": sessionCookie.serialize()
-			}
-		});
+        if(response.success) {
+            console.log("before generate verification code");
+            const verificationCode = await generateEmailVerificationCode(userId, email);
+            console.log(verificationCode);
+            await testVerificationCode(verificationCode);
+            
+            const session = await lucia.createSession(userId, {});
+            const sessionCookie = lucia.createSessionCookie(session.id);
+            return new Response(
+                JSON.stringify({
+                    message: response.message
+                }), {
+                status: 201, // Created
+                headers: {
+                    Location: "/",
+                    "Set-Cookie": sessionCookie.serialize()
+                }
+            });
+        } else {
+            return new Response(
+                JSON.stringify({
+                    message: response.message
+                }), {
+                    status: 409 // Conflict
+                });
+        }
     } catch(err) {
         console.log(err);
-        return new Response("Email already used", {
+        return new Response("Error", {
 			status: 400
 		});
     }

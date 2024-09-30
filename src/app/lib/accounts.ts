@@ -44,6 +44,15 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function createUser(userId: string, email: string, passwordHash: string) {
+    const user = await prisma.user.findUnique({
+        where: { email: email }
+    });
+    
+    if (user) {
+        // Email is already used, return an error message or throw an error
+        return { success: false, message: "Email is already in use" };
+    }
+
     await prisma.user.create({
         data: {
             id: userId,
@@ -52,6 +61,9 @@ export async function createUser(userId: string, email: string, passwordHash: st
             passwordHash: passwordHash,
         }
     });
+
+    // Return success response
+    return { success: true, message: "User created successfully" };
 }
 
 export async function generateEmailVerificationCode(userId: string, email: string): Promise<string> {
@@ -69,7 +81,6 @@ export async function generateEmailVerificationCode(userId: string, email: strin
     }
 
     const code = generateRandomString(6, alphabet("0-9", "A-Z"));
-    console.log(code);
 
     await prisma.verification.create({
         data: {
