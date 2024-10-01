@@ -9,6 +9,15 @@ import { isValidEmail } from "./utils";
 import { sendVerificationCode, testVerificationCode } from "./email";
 
 export async function signup(formData: FormData): Promise<Response> {
+    const username = formData.get("username");
+    if (
+        !username || typeof username !== "string"
+    ) {
+        return new Response("Invalid username", {
+			status: 400
+		});
+    }
+
     const email = formData.get("email");
     if (
         !email || typeof email !== "string" || !isValidEmail(email)
@@ -35,7 +44,7 @@ export async function signup(formData: FormData): Promise<Response> {
     ("before generate verification code");
     try {
         const userId = generateIdFromEntropySize(10);
-        const response = await createUser(userId, email, passwordHash)
+        const response = await createUser(userId, username, email, passwordHash)
 
         if(response.success) {
             console.log("before generate verification code");

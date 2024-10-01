@@ -1,7 +1,7 @@
-import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/solid'
+import { EnvelopeIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import { FormEvent, useState } from 'react';
-import { loginSchema } from '../lib/validationSchema';
+import { loginSchema, registerSchema } from '../lib/validationSchema';
 import LabelInput from './landing-page/labelInput';
 import VerificationCodeInput from './landing-page/verificationCodeInput';
 
@@ -27,7 +27,7 @@ export default function Login() {
             if(!isRegistering) {
                 validation = loginSchema.safeParse(formObject);
             } else {
-                validation = loginSchema.safeParse(formObject);
+                validation = registerSchema.safeParse(formObject);
             }
 
             console.log(validation.error?.errors);
@@ -119,6 +119,10 @@ export default function Login() {
                     </form>
                 ) : (
                     <form className="w-full h-full flex flex-col" onSubmit={onSubmit}>
+                        <LabelInput name='username' id='username' type='text' labelName='Username'>
+                            <UserIcon/>
+                        </LabelInput>
+                        {errors.username && <p className='text-red-400 mx-1'>{errors.username}</p>}
                         <LabelInput name='email' id='email' type='text' labelName='Email'>
                             <EnvelopeIcon/>
                         </LabelInput>
@@ -127,6 +131,10 @@ export default function Login() {
                             <LockClosedIcon/>
                         </LabelInput>
                         {errors.password && <p className='text-red-400 mx-1'>{errors.password}</p>}
+                        <LabelInput name='confirmPassword' id='confirmPassword' type='password' labelName='Confirm Password'>
+                            <LockClosedIcon/>
+                        </LabelInput>
+                        {errors.confirmPassword && <p className='text-red-400 mx-1'>{errors.confirmPassword}</p>}
                         <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Register</button>
                         <div className='py-4 flex justify-center'>
                             <p className="text-center">Already have an account? <button onClick={() => setIsRegistering(false)} className='text-primary-500 hover:text-primary-600 transition-all'>Login</button></p>
