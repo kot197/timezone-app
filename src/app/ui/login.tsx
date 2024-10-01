@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { FormEvent, useState } from 'react';
 import { loginSchema } from '../lib/validationSchema';
 import LabelInput from './landing-page/labelInput';
+import VerificationCodeInput from './landing-page/verificationCodeInput';
 
 export default function Login() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -92,14 +93,7 @@ export default function Login() {
                     <form className="w-full h-full flex flex-col" onSubmit={onSubmit}>
                         <p className='text-center mt-7 mb-4'>A six alphanumeric code has been sent to your email.<br/>
                         Enter the code below to verify your email address.</p>
-                        <div className='flex justify-center space-x-4 text-black *:text-center *:text-2xl *:w-11 *:h-14 *:rounded-xl'>
-                            <input type='text' maxLength={1} autoFocus></input>
-                            <input type='text' maxLength={1}></input>
-                            <input type='text' maxLength={1}></input>
-                            <input type='text' maxLength={1}></input>
-                            <input type='text' maxLength={1}></input>
-                            <input type='text' maxLength={1}></input>
-                        </div>
+                        <VerificationCodeInput/>
                         <p className='text-center mt-4'>Didn't get the code? Click <button className='text-primary-500 hover:text-primary-600 transition-all'>here</button> to resend the code</p>
                         <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Verify</button>
                     </form>
