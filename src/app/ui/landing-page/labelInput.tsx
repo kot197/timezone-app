@@ -1,7 +1,7 @@
 // components/TextInput.jsx
 import { useState } from 'react';
 
-const LabelInput = ({ name, id, type, labelName}: {name: string, id: string, type: string, labelName: string}) => {
+const LabelInput = ({ children, name, id, type, labelName}: {children: React.ReactNode, name: string, id: string, type: string, labelName: string}) => {
   const [value, setValue] = useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -9,7 +9,10 @@ const LabelInput = ({ name, id, type, labelName}: {name: string, id: string, typ
   };
 
   return (
-    <div>
+    <div className='border-b-4 relative mt-9 mb-2'>
+        <span className='*:absolute *:right-1.5 *:top-1 *:size-6'>
+            { children }
+        </span>
         <input
             name={name}
             id={id}

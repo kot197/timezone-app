@@ -105,19 +105,13 @@ export default function Login() {
                     </form>
                 ) : !isRegistering ? (
                     <form className="w-full h-full flex flex-col" onSubmit={onSubmit}>
-                        <div className='border-b-4 relative mt-9 mb-2'>
-                            <span>
-                                <EnvelopeIcon className='absolute right-1.5 top-1 size-6'/>
-                            </span>
-                            <LabelInput name='email' id='email' type='text' labelName='Email'/>
-                        </div>
+                        <LabelInput name='email' id='email' type='text' labelName='Email'>
+                            <EnvelopeIcon/>
+                        </LabelInput>
                         {errors.email && <p className='text-red-400 mx-1'>{errors.email}</p>}
-                        <div className='border-b-4 relative mt-7 mb-2'>
-                            <span>
-                                <LockClosedIcon className='absolute right-1.5 top-1 size-6'/>
-                            </span>
-                            <LabelInput name='password' id='password' type='password' labelName='Password'/>
-                        </div>
+                        <LabelInput name='password' id='password' type='password' labelName='Password'>
+                            <LockClosedIcon/>
+                        </LabelInput>
                         {errors.password && <p className='text-red-400 mx-1'>{errors.password}</p>}
                         <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Login</button>
                         <a className="py-2 px-4 rounded-3xl bg-white hover:bg-gray-600 mt-4 text-black hover:text-white text-center transition hover:scale-105 ease-in-out" href="/login/discord">
@@ -131,19 +125,13 @@ export default function Login() {
                     </form>
                 ) : (
                     <form className="w-full h-full flex flex-col" onSubmit={onSubmit}>
-                        <div className='border-b-4 relative mt-9 mb-2'>
-                            <span>
-                                <EnvelopeIcon className='absolute right-1.5 top-1 size-6'/>
-                            </span>
-                            <LabelInput name='email' id='email' type='text' labelName='Email'/>
-                        </div>
+                        <LabelInput name='email' id='email' type='text' labelName='Email'>
+                            <EnvelopeIcon/>
+                        </LabelInput>
                         {errors.email && <p className='text-red-400 mx-1'>{errors.email}</p>}
-                        <div className='border-b-4 relative mt-7 mb-2'>
-                            <span>
-                                <LockClosedIcon className='absolute right-1.5 top-1 size-6'/>
-                            </span>
-                            <LabelInput name='password' id='password' type='password' labelName='Password'/>
-                        </div>
+                        <LabelInput name='password' id='password' type='password' labelName='Password'>
+                            <LockClosedIcon/>
+                        </LabelInput>
                         {errors.password && <p className='text-red-400 mx-1'>{errors.password}</p>}
                         <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Register</button>
                         <div className='py-4 flex justify-center'>
