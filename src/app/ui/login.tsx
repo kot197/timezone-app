@@ -10,78 +10,76 @@ export default function Login() {
     const [isRegistering, setIsRegistering] = useState<boolean>(false);
     const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-     
+    function validateForm(formObject: Record<string, any>) {
+        const schema = isRegistering ? registerSchema : loginSchema;
+        const validation = schema.safeParse(formObject);
+
+        console.log(validation.error?.errors);
+
+        if(!validation.success) {
+            const errorMessages = validation.error.errors.reduce((accumulator, error) => {
+                const field = error.path[0]; // 'email' or 'password'
+
+                // Only set the error if it doesn't already exist in the accumulator (i.e., surface error)
+                if (!accumulator[field]) {
+                    accumulator[field] = error.message;
+                }
+
+                return accumulator;
+            }, {} as {[key: string]: string});
+
+            console.log("Validation Errors:", errorMessages);
+            setErrors(errorMessages);
+            return false;
+        }
+
+        console.log("No validation error: ", formObject);
+        setErrors({});
+        return true;
+    }
+
+    async function submitForm(formData: FormData, url: string) {
         try {
-            const formData = new FormData(event.currentTarget);
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+            });
 
-            // Convert FormData to a plain object for easier inspection
-            const formObject = Object.fromEntries(formData.entries());
+            if(!response.ok) {
+                if(response.status == 409 && response.body) {
+                    const responseBody = await response.json();
 
-            // Log the form data right from the start
-            console.log("Form Data at Start:", formObject);
-
-            let validation;
-
-            if(!isRegistering) {
-                validation = loginSchema.safeParse(formObject);
-            } else {
-                validation = registerSchema.safeParse(formObject);
+                    setErrors({ email: responseBody.message });
+                }
+                return null;
             }
 
-            console.log(validation.error?.errors);
-
-            if(!validation.success) {
-                const errorMessages = validation.error.errors.reduce((accumulator, error) => {
-                    const field = error.path[0]; // 'email' or 'password'
-
-                    // Only set the error if it doesn't already exist in the accumulator (i.e., surface error)
-                    if (!accumulator[field]) {
-                        accumulator[field] = error.message;
-                    }
-
-                    return accumulator;
-                }, {} as {[key: string]: string});
-
-                console.log("Validation Errors:", errorMessages);
-                setErrors(errorMessages);
-            } else {
-                console.log("No validation error: ", formObject);
-                setErrors({});
-
-                let response;
-
-                if(!isRegistering) {
-                    response = await fetch('/login/email', {
-                        method: 'POST',
-                        body: formData,
-                    });
-                } else {
-                    response = await fetch('/sign-up', {
-                        method: 'POST',
-                        body: formData,
-                    });
-                }
-    
-                if(!response.ok) {
-                    if(response.status == 409 && response.body) {
-                        const responseBody = await response.json();
-
-                        setErrors({
-                            email: responseBody.message,
-                        });
-                    }
-                } else if (isRegistering) {
-                    setIsVerifying(true);
-                }
-            
-                // Handle response if necessary
-                const data = await response.json()
-                // ...
-            }
+            return response.json;
         } catch (error) {
 
+        }
+    }
+
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+
+        const formData = new FormData(event.currentTarget);
+        // Convert FormData to a plain object for easier inspection
+        const formObject = Object.fromEntries(formData.entries());
+        // Log the form data right from the start
+        console.log("Form Data at Start:", formObject);
+
+        const isValid = validateForm(formObject);
+
+        if(!isValid) return;
+
+        if(isRegistering) {
+            const result = await submitForm(formData, '/sign-up');
+            if (result) {
+                setIsVerifying(true); // Switch to email verification
+            }
+        } else {
+            await submitForm(formData, '/login/email');
         }
     }
 

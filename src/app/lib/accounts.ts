@@ -1,7 +1,8 @@
 import { prisma } from "@/db/prisma";
 import { DiscordUser } from "../(general)/login/discord/callback/route";
 import { alphabet, generateRandomString } from "oslo/crypto";
-import { createDate, TimeSpan } from "oslo";
+import { createDate, isWithinExpirationDate, TimeSpan } from "oslo";
+import { User } from "lucia";
 
 export async function getAccountByDiscordId(discordId: string) {
     return await prisma.user.findFirst({
@@ -93,4 +94,41 @@ export async function generateEmailVerificationCode(userId: string, email: strin
     });
 
     return code;
+}
+
+export async function verifyVerificationCode(user: User, code: string) {
+    const verification = await prisma.verification.findUnique({
+        where: {
+            userId: user.id,
+        }
+    });
+
+	if (!verification || verification.code !== code) {
+		return false;
+	}
+
+    await prisma.verification.delete({
+        where: {
+            id: verification.id,
+        }
+    });
+
+	if (!isWithinExpirationDate(verification.expires_at)) {
+		return false;
+	}
+	if (verification.email !== user.email) {
+		return false;
+	}
+	return true;
+}
+
+export async function verifyEmail(user: User) {
+    await prisma.user.update({
+        where: {
+            id: user.id,
+        },
+        data: {
+            emailVerified: true,
+        }
+    });
 }
