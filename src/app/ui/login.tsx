@@ -1,17 +1,19 @@
 import { EnvelopeIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import { FormEvent, useState } from 'react';
-import { loginSchema, registerSchema } from '../lib/validationSchema';
+import { loginSchema, registerSchema, verificationCodeSchema } from '../lib/validationSchema';
 import LabelInput from './landing-page/labelInput';
 import VerificationCodeInput from './landing-page/verificationCodeInput';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [isRegistering, setIsRegistering] = useState<boolean>(false);
     const [isVerifying, setIsVerifying] = useState<boolean>(false);
+    const router = useRouter();
 
     function validateForm(formObject: Record<string, any>) {
-        const schema = isRegistering ? registerSchema : loginSchema;
+        const schema = isVerifying ? verificationCodeSchema : isRegistering ? registerSchema : loginSchema;
         const validation = schema.safeParse(formObject);
 
         console.log(validation.error?.errors);
@@ -73,7 +75,10 @@ export default function Login() {
 
         if(!isValid) return;
 
-        if(isRegistering) {
+        if(isVerifying) {
+            await submitForm(formData, '/email-verification');
+            router.push('/web-app/home');   
+        } else if(isRegistering) {
             const result = await submitForm(formData, '/sign-up');
             if (result) {
                 setIsVerifying(true); // Switch to email verification
@@ -92,6 +97,7 @@ export default function Login() {
                         <p className='text-center mt-7 mb-4'>A six alphanumeric code has been sent to your email.<br/>
                         Enter the code below to verify your email address.</p>
                         <VerificationCodeInput/>
+                        {errors.verificationCode && <p className='text-red-400 mx-1 text-center mt-2'>{errors.verificationCode}</p>}
                         <p className='text-center mt-4'>Didn't get the code? Click <button className='text-primary-500 hover:text-primary-600 transition-all'>here</button> to resend the code</p>
                         <button type="submit" className="mt-7 py-2 px-4 rounded-3xl bg-primary-500 hover:bg-primary-600 transition hover:scale-105 ease-in-out">Verify</button>
                     </form>

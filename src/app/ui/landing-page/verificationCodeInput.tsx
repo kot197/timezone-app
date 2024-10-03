@@ -20,6 +20,7 @@ const VerificationCodeInput = () => {
         {[...Array(6)].map((_, index) => (
             <input
             key={index}
+            name={`codeChar`+(index+1)}
             type="text"
             maxLength={1}
             autoFocus={index === 0}
