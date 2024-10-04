@@ -24,7 +24,7 @@ const VerificationCodeInput = () => {
             type="text"
             maxLength={1}
             autoFocus={index === 0}
-            className="text-center text-2xl w-11 h-14 rounded-xl"
+            className="text-center text-2xl w-14 h-16 rounded-xl"
             ref={(el) => {inputRefs.current[index] = el}}
             onChange={(event) => handleInputChange(event, index)}/>
         ))

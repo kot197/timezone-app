@@ -53,6 +53,11 @@ export default function Login() {
 
                     setErrors({ email: responseBody.message });
                 }
+                if(response.status == 401 && response.body) {
+                    const responseBody = await response.json();
+
+                    setIsVerifying(true);
+                }
                 return null;
             }
 
@@ -76,15 +81,20 @@ export default function Login() {
         if(!isValid) return;
 
         if(isVerifying) {
-            await submitForm(formData, '/email-verification');
-            router.push('/web-app/home');   
+            const result = await submitForm(formData, '/email-verification');
+            if (result) {
+                router.push('/web-app/home');
+            }   
         } else if(isRegistering) {
             const result = await submitForm(formData, '/sign-up');
             if (result) {
                 setIsVerifying(true); // Switch to email verification
             }
         } else {
-            await submitForm(formData, '/login/email');
+            const result = await submitForm(formData, '/login/email');
+            if (result) {
+                router.push('/web-app/home');
+            }
         }
     }
 

@@ -86,7 +86,7 @@ export async function login(formData: FormData): Promise<Response> {
     if(
         !email ||
         typeof email !== "string" ||
-        isValidEmail(email)
+        !isValidEmail(email)
     ) {
         console.log("Invalid email");
 		return new Response("Invalid email", {
@@ -125,12 +125,28 @@ export async function login(formData: FormData): Promise<Response> {
 
     const session = await lucia.createSession(existingUser.id, {});
 	const sessionCookie = lucia.createSessionCookie(session.id);
-
     console.log("login: no error");
 
     const serializedCookie = sessionCookie.serialize();
-
     console.log(serializedCookie);
+
+    if(!existingUser.emailVerified) {
+        console.log("before generate verification code");
+        const verificationCode = await generateEmailVerificationCode(existingUser.id, email);
+        console.log(verificationCode);
+        await testVerificationCode(verificationCode);
+
+        return new Response(
+            JSON.stringify({
+                message: "Unauthorized. Email not verified."
+            }), {
+                status: 401, // Unauthorized
+                headers: {
+                    Location: "/",
+                    "Set-Cookie": sessionCookie.serialize()
+                }
+            });
+    }
 
     return new Response(null, {
 		status: 302,
