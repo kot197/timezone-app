@@ -10,6 +10,8 @@
 ## Landing Page and Login/Register Page
 ### User will be able to login via email or with social (discord)
 ![image](https://github.com/user-attachments/assets/dc3d458d-da53-453a-8fb5-200202636bff)
+![image](https://github.com/user-attachments/assets/8344c210-eab1-47be-b53d-3ea338a6a97a)
+![image](https://github.com/user-attachments/assets/ec61eebb-e975-4394-afb8-e8e99fac6073)
 ## Home Section
 ### This is where we will see your friends' cards, displaying their timezones
 ![image](https://github.com/user-attachments/assets/c20093fa-de8d-4418-baf0-85b19f7ce78f)
