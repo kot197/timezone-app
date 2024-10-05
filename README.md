@@ -20,5 +20,6 @@
 ![image](https://github.com/user-attachments/assets/bae076c7-fed7-4f58-b559-6dea20c6b3d0)
 ## Add Friend
 ### This is where you can add a new friend, integration with discord will be added in the future 
-![image](https://github.com/user-attachments/assets/db5219ba-e831-46aa-897f-1c7e58170a92)
+![image](https://github.com/user-attachments/assets/88f59ad7-e693-4938-9d03-b9cac7522589)
+
 
