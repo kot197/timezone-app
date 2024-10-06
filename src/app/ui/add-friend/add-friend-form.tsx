@@ -1,11 +1,13 @@
 "use client";
-import { getAllCountries, getCountry } from "countries-and-timezones";
+import { getAllCountries, getCountry, getTimezonesForCountry, Timezone } from "countries-and-timezones";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { XMarkIcon } from '@heroicons/react/24/solid'
+import { addFriendFormSchema } from "@/app/lib/addFriendValidationSchema";
 
 
 export default function AddFriendForm() {
-    const [timezones, setTimezones] = useState<string[]>([]);
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [timezones, setTimezones] = useState<Timezone[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<string>("");
     const [tagInput, setTagInput] = useState<string>("");
     const [tags, setTags] = useState<string[]>([]);
@@ -22,28 +24,56 @@ export default function AddFriendForm() {
     });
 
     const selectTimezoneItems = timezones.map((timezone) => (
-        <option key={timezone} value={timezone}>
-            {timezone}
+        <option key={timezone.name} value={timezone.name}>
+            {`(UTC${timezone.dstOffsetStr}) ${timezone.name}`}
         </option>
     ));
 
+    // VALIDATE FORM
+    function validateForm(formObject: Record<string, any>) {
+        const validation = addFriendFormSchema.safeParse(formObject);
+
+        if(!validation.success) {
+            const errorMessages = validation.error.errors.reduce((accumulator, error) => {
+                const field = error.path[0]; // 'email' or 'password'
+
+                // Only set the error if it doesn't already exist in the accumulator (i.e., surface error)
+                if (!accumulator[field]) {
+                    accumulator[field] = error.message;
+                }
+
+                return accumulator;
+            }, {} as {[key: string]: string});
+
+            console.log("Validation Errors:", errorMessages);
+            setErrors(errorMessages);
+            return false;
+        }
+
+        setErrors({});
+        return true;
+    }
+
+    // ON SELECTING COUNTRY
     function onCountryChange(event: ChangeEvent<HTMLSelectElement>) {
         const countryCode = event.target.value;
         setSelectedCountry(countryCode);
         
-        const country = getCountry(countryCode);
+        const timezones = getTimezonesForCountry(countryCode);
 
-        if (country && country.timezones) {
-            setTimezones(country.timezones);
+        if (timezones) {
+            setTimezones(timezones);
         } else {
             setTimezones([]);
         }
     }
 
+    // ON TYPING TAG
     function handleTagChange(event: ChangeEvent<HTMLInputElement>) {
         setTagInput(event.target.value);
     }
 
+    // ON ADD TAG
     function handleAddTag(event: FormEvent) {
         event.preventDefault();
 
@@ -55,17 +85,36 @@ export default function AddFriendForm() {
         }
     }
 
+    // ON DELETE TAG
     function handleDeleteTag(index: number) {
         const updatedTags = tags.filter((_, i) => i !== index);
         setTags(updatedTags);
     }
 
+    // ON ADD FRIEND
+    function handleAddFriend(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget);
+        // Convert FormData to a plain object for easier inspection
+        const formObject = Object.fromEntries(formData.entries());
+        // Log the form data right from the start
+        console.log("Form Data at Start:", formObject);
+
+        const isValid = validateForm(formObject);
+
+        if(!isValid) return;
+
+        return;
+    }
+
     return (
-        <form className="py-4 px-20">
+        <form className="py-4 px-20" onSubmit={handleAddFriend}>
             <div className="flex flex-col py-2">
                 <label className="pb-2 text-xl" htmlFor="name">Name</label>
-                <input className="bg-transparent border-white border rounded-lg py-2 px-2" placeholder="Enter Name" type="text" id="name" name="name" required></input>
+                <input className="bg-transparent border-white border rounded-lg py-2 px-2" placeholder="Enter Name" type="text" id="name" name="name"></input>
             </div>
+            {errors.name && <p className='text-red-400 mx-1'>{errors.name}</p>}
             <div className="flex flex-col py-2">
                 <label className="pb-2 text-xl" htmlFor="country">Country</label>
                 <select className="bg-transparent border-white border rounded-lg py-2 *:text-black" id="country" name="country" onChange={onCountryChange}>
@@ -73,6 +122,7 @@ export default function AddFriendForm() {
                     { selectCountryItems }
                 </select>
             </div>
+            {errors.country && <p className='text-red-400 mx-1'>{errors.country}</p>}
             <div className="flex flex-col py-2">
                 <label className="pb-2 text-xl" htmlFor="timezone">Timezone</label>
                 <select className="bg-transparent border-white border rounded-lg py-2 *:text-black" id="timezone" name="timezone" disabled={!selectedCountry}>
@@ -80,6 +130,7 @@ export default function AddFriendForm() {
                     { selectTimezoneItems }
                 </select>
             </div>
+            {errors.timezone && <p className='text-red-400 mx-1'>{errors.timezone}</p>}
             <div className="flex flex-col py-2">
                 <label className="pb-2 text-xl" htmlFor="location">Location (Optional)</label>
                 <input className="bg-transparent border-white border rounded-lg py-2 px-2" placeholder="Enter Location" type="text" id="location" name="location"></input>
@@ -119,7 +170,7 @@ export default function AddFriendForm() {
                 )}
             </div>
             <div className="flex justify-center mt-20">
-                <button className="basis-1/3 py-2 px-12 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-all">
+                <button type="submit" className="basis-1/3 py-2 px-12 rounded-xl bg-indigo-500 hover:bg-indigo-600 transition-all">
                     Submit
                 </button>
             </div>
