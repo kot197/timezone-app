@@ -92,7 +92,7 @@ export default function AddFriendForm() {
     }
 
     // ON ADD FRIEND
-    function handleAddFriend(event: FormEvent<HTMLFormElement>) {
+    async function handleAddFriend(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
@@ -105,7 +105,20 @@ export default function AddFriendForm() {
 
         if(!isValid) return;
 
-        return;
+        tags.forEach(tag => {
+            formData.append('tags', tag);
+        });
+
+        console.log(JSON.stringify(tags));
+
+        const response = await fetch('/api/add-friend', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if(response.ok) {
+            console.log("Success 200 Add-Friend")
+        }
     }
 
     return (

@@ -50,6 +50,7 @@ model Session {
 
 model Friend {
   id Int @id @default(autoincrement())
+  name String
   country String
   country_code String
   timezone String
@@ -61,7 +62,7 @@ model Friend {
 
   // Relations
   userId String
-  user User @relation(references: [discordId], fields: [userId], onDelete: Cascade)
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
   notifications Notification[]
   tags FriendTag[]
 }
